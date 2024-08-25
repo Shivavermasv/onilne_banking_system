@@ -46,8 +46,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/**").authenticated()  // Require authentication for other endpoints
                 )
                 .addFilter(new JWTAuthenticationFilter(authenticationManager, customUserDeatilsService))
-                .addFilterAfter(new JWTAuthorizationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
-                .httpBasic();
+                .addFilterAfter(new JWTAuthorizationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class).httpBasic();
 
         return http.build();
     }

@@ -22,6 +22,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -29,11 +30,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     Authentication auth;
 
     private final AuthenticationManager authenticationManager;
-    private final UserDetailsService userDetailsService;
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager, UserDetailsService userDetailsService) {
         this.authenticationManager = authenticationManager;
-        this.userDetailsService = userDetailsService;
     }
     @Bean
     public UserDetailsService userDetailsService() {
@@ -73,11 +72,21 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         UserDetails userDetails = (UserDetails) authResult.getPrincipal();
+        String encodedSecret = Base64.getEncoder().encodeToString(SecurityConstants.SECRET.getBytes());
+        System.out.println("Encoded Secret: " + encodedSecret);
+
+        // JWT Creation
         String token = Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS512, Base64.getEncoder().encodeToString(SecurityConstants.SECRET.getBytes()))
+                .signWith(SignatureAlgorithm.HS512, SecurityConstants.SECRET.getBytes(StandardCharsets.UTF_8))  // Use UTF-8 encoding
                 .compact();
+
+        System.out.println("Generated Token: " + token);
+
+
+        // Add the token to the response header
         response.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
     }
+
 }

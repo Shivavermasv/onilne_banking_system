@@ -45,17 +45,15 @@ public class ClientService {
         return optional.map(Collections::singletonList).orElse(Collections.emptyList());
     }
 
-    public List<Client> searchClients(String name, String phone, LocalDate dateOfBirth, String email) {
+    public List<Client> searchClients(String name, String phone, String email) {
         if (name != null) {
             return optionalToList(clientRepository.findByNameContaining(name));
         } else if (phone != null) {
             return clientRepository.findByPhone(phone);
-        } else if (dateOfBirth != null) {
-            return clientRepository.findByDateOfBirthAfter(dateOfBirth);
         } else if (email != null) {
             return clientRepository.findByEmail(email);
         }
-        return clientRepository.findAll();
+        return null;
     }
 
     @Transactional

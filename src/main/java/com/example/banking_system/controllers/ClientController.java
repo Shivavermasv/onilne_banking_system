@@ -25,7 +25,6 @@ public class ClientController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
     @Autowired
     private ClientService clientService;
 
@@ -54,12 +53,12 @@ public class ClientController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Client>> searchClients(
+    public ResponseEntity<?> searchClients(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String phone,
-            @RequestParam(required = false) LocalDate dateOfBirth,
             @RequestParam(required = false) String email) {
-        return ResponseEntity.ok(clientService.searchClients(name, phone, dateOfBirth, email));
+        if(clientService.searchClients(name,phone,email) == null) return ResponseEntity.ok("NO USER FOUND !!");
+        return ResponseEntity.ok(clientService.searchClients(name, phone, email));
     }
 
     @PostMapping("/transfer")
