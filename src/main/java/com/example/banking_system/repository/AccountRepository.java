@@ -12,6 +12,7 @@ import java.util.Optional;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
+    Account findById(long id);
     // Find an account by its balance
     Optional<Account> findByBalance(BigDecimal balance);
 

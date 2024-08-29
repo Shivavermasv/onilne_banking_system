@@ -1,7 +1,8 @@
 package com.example.banking_system.repository;
 
-
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.example.banking_system.model.Client;
 
@@ -9,7 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public interface ClientRepository extends JpaRepository<Client, Long> {
+public interface ClientRepository extends JpaRepository<Client, String> {
 
     /**
      * Finds clients whose date of birth is after the specified date.
@@ -39,4 +40,10 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
      */
     List<Client> findByEmail(String email);
 
+    /**
+     * Finds all clients.
+     * @return List of all clients.
+     */
+    @Query("SELECT c FROM Client c")
+    List<Client> findAllClients();
 }
